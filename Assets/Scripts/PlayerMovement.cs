@@ -11,13 +11,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Vector2 deathKick = new Vector2 (10f, 10f);
     [SerializeField] GameObject bullet;
     [SerializeField] Transform gun;
-    
+    [SerializeField] AudioClip deathSFX; // 죽을때 나는 사운드
+    [SerializeField] AudioClip ShotSFX; // 총소리 클립
+
     Vector2 moveInput;
     Rigidbody2D myRigidbody;
     Animator myAnimator;
     CapsuleCollider2D myBodyCollider;
     BoxCollider2D myFeetCollider;
     GameObject guns;
+    AudioSource myAudioSource;
     bool isClimb = false;
     float gravityScaleAtStart;
 
@@ -29,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
         myAnimator = GetComponent<Animator>();
         myBodyCollider = GetComponent<CapsuleCollider2D>();
         myFeetCollider = GetComponent<BoxCollider2D>();
+        myAudioSource = GetComponent<AudioSource>();
         gravityScaleAtStart = myRigidbody.gravityScale;
         guns = transform.GetChild(0).gameObject;
     }
@@ -46,6 +50,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isAlive) { return; }
         if (isClimb) { return; }
+        myAudioSource.PlayOneShot(ShotSFX, 1);
         Instantiate(bullet, gun.position, transform.rotation);
     }
     
@@ -113,9 +118,13 @@ public class PlayerMovement : MonoBehaviour
         {
             isAlive = false;
             myAnimator.SetTrigger("Dying");
+            myAudioSource.PlayOneShot(deathSFX, 1);
             myRigidbody.velocity = deathKick;
-            FindObjectOfType<GameSession>().ProcessPlayerDeath();
+            Invoke("ProcessPlayerDeath", 1);
         }
     }
-
+    void ProcessPlayerDeath()
+    {
+        FindObjectOfType<GameSession>().ProcessPlayerDeath();
+    }
 }

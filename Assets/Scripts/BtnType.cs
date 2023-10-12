@@ -16,7 +16,7 @@ public class BtnType : MonoBehaviour
         switch (currentType)
         {
             case BTNType.Start:
-                SceneManager.LoadScene("Level 1");
+                SceneManager.LoadScene("Stage1");
                 break;
             case BTNType.Quit:
                 ClickQuit();
