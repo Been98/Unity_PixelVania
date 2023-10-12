@@ -49,7 +49,11 @@ public class GameSession : MonoBehaviour
         score += pointsToAdd;
         scoreText.text = score.ToString(); 
     }
-
+    public void AddToLife()
+    {
+        playerLives++;
+        livesText.text = playerLives.ToString();
+    }
     void TakeLife()
     {
         playerLives--;

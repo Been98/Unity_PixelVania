@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     Animator myAnimator;
     CapsuleCollider2D myBodyCollider;
     BoxCollider2D myFeetCollider;
+    GameObject guns;
+    bool isClimb = false;
     float gravityScaleAtStart;
 
     bool isAlive = true;
@@ -28,6 +30,7 @@ public class PlayerMovement : MonoBehaviour
         myBodyCollider = GetComponent<CapsuleCollider2D>();
         myFeetCollider = GetComponent<BoxCollider2D>();
         gravityScaleAtStart = myRigidbody.gravityScale;
+        guns = transform.GetChild(0).gameObject;
     }
 
     void Update()
@@ -42,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     void OnFire(InputValue value)
     {
         if (!isAlive) { return; }
+        if (isClimb) { return; }
         Instantiate(bullet, gun.position, transform.rotation);
     }
     
@@ -89,14 +93,17 @@ public class PlayerMovement : MonoBehaviour
         { 
             myRigidbody.gravityScale = gravityScaleAtStart;
             myAnimator.SetBool("isClimbing", false);
+            isClimb = false;
             return;
         }
         
         Vector2 climbVelocity = new Vector2 (myRigidbody.velocity.x, moveInput.y * climbSpeed);
         myRigidbody.velocity = climbVelocity;
         myRigidbody.gravityScale = 0f;
-
+  
         bool playerHasVerticalSpeed = Mathf.Abs(myRigidbody.velocity.y) > Mathf.Epsilon;
+        isClimb = true;
+        guns.SetActive(!playerHasVerticalSpeed);
         myAnimator.SetBool("isClimbing", playerHasVerticalSpeed);
     }
 

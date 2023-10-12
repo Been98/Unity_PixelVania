@@ -19,6 +19,7 @@ public class Bullet : MonoBehaviour
     void Update()
     {
         myRigidbody.velocity = new Vector2 (xSpeed, 0f);
+        transform.localScale = player.transform.localScale;
     }
 
     void OnTriggerEnter2D(Collider2D other) 
